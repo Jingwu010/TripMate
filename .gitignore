@@ -1,3 +1,9 @@
 # ipython
 .ipynb_checkpoints
 *.ipynb
+
+# complied classes
+source/java_server/target/
+
+# idea
+source/java_server/.idea/
