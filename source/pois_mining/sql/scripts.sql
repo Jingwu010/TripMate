@@ -1,6 +1,6 @@
 CREATE USER 'tripmate'@'localhost'
   IDENTIFIED BY 'tripmate';
-GRANT ALL PRIVILEGES ON database.tripmate TO 'tripmate'@'localhost';
+GRANT ALL PRIVILEGES ON tripmate.* TO 'tripmate'@'localhost';
 
 
 CREATE USER 'tripmate'@'localhost' IDENTIFIED WITH mysql_native_password BY 'tripmate';
