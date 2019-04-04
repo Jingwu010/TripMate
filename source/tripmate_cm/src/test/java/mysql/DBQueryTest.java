@@ -2,6 +2,8 @@
  * Created by Jingwu Xu on 4/3/19.
  */
 
+package mysql;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -11,16 +13,14 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DBQueryTest {
-    static DBQuery con;
-
     @BeforeAll
     public static void setUpClass() {
-        con = new DBQuery(true);
+        DBQuery.change_to_test_database();
     }
 
     @Test
     void get_all_states() {
-        List<String> states = con.get_all_states();
+        List<String> states = DBQuery.get_all_states();
         assertEquals(51, states.size());
         assertTrue(this.check_string_in_list(states, "Colorado"));
         assertTrue(this.check_string_in_list(states, "Utah"));
@@ -32,7 +32,7 @@ class DBQueryTest {
 
     @Test
     void get_all_cities() {
-        List<String> cities = con.get_all_cities();
+        List<String> cities = DBQuery.get_all_cities();
         assertEquals(252, cities.size());
         assertTrue(this.check_string_in_list(cities, "Tulsa"));
         assertTrue(this.check_string_in_list(cities, "Racine"));
@@ -44,7 +44,7 @@ class DBQueryTest {
 
     @Test
     void get_all_pois_names() {
-        List<String> pois = con.get_all_pois_names();
+        List<String> pois = DBQuery.get_all_pois_names();
         assertEquals(4672, pois.size());
         assertTrue(this.check_string_in_list(pois, "Otakon"));
         assertTrue(this.check_string_in_list(pois, "Providence College"));
@@ -56,12 +56,12 @@ class DBQueryTest {
 
     @Test
     void get_cities_by_state_name() {
-        List<String> co_cities = con.get_cities_by_state_name("Colorado");
+        List<String> co_cities = DBQuery.get_cities_by_state_name("Colorado");
         assertEquals(5, co_cities.size());
         assertTrue(this.check_string_in_list(co_cities, "Denver"));
         assertFalse(this.check_string_in_list(co_cities, "Akron"));
 
-        List<String> nm_cities = con.get_cities_by_state_name("New Mexico");
+        List<String> nm_cities = DBQuery.get_cities_by_state_name("New Mexico");
         assertEquals(3, nm_cities.size());
         assertTrue(this.check_string_in_list(nm_cities, "Santa Fe"));
         assertFalse(this.check_string_in_list(nm_cities, "Akron"));
@@ -69,19 +69,19 @@ class DBQueryTest {
 
     @Test
     void get_all_pois_details() {
-        List<Map<String, String>> pois = con.get_all_pois_details();
+        List<Map<String, String>> pois = DBQuery.get_all_pois_details();
         assertEquals(4672, pois.size());
     }
 
     @Test
     void get_pois_details_by_city_name() {
-        List<Map<String, String>> de_pois = con.get_pois_details_by_city_name("Denver");
+        List<Map<String, String>> de_pois = DBQuery.get_pois_details_by_city_name("Denver");
         assertEquals(41, de_pois.size());
 
-        List<Map<String, String>> sd_pois = con.get_pois_details_by_city_name("San Diego");
+        List<Map<String, String>> sd_pois = DBQuery.get_pois_details_by_city_name("San Diego");
         assertEquals(30, sd_pois.size());
 
-        List<Map<String, String>> na_pois = con.get_pois_details_by_city_name("Nashville");
+        List<Map<String, String>> na_pois = DBQuery.get_pois_details_by_city_name("Nashville");
         assertEquals(40, na_pois.size());
     }
 

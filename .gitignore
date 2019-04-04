@@ -3,7 +3,11 @@
 *.ipynb
 
 # complied classes
-source/java_server/target/
+target/
 
-# idea
-source/java_server/.idea/
+# in-build projects
+source/tripmate-jersey/
+
+# backups
+source/java_server_bc/
+
