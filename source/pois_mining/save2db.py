@@ -10,7 +10,7 @@ config = {
     'user': 'tripmate',
     'password': 'tripmate',
     'host': '127.0.0.1',
-    'database': 'tripmate',
+    'database': 'tripmate_test',
     'raise_on_warnings': True,
     'auth_plugin': 'mysql_native_password'
 }
@@ -134,7 +134,7 @@ if __name__== "__main__":
         cursor = cnx.cursor()
 
         if FLAG:
-            drop_tables(cursor)
+            # drop_tables(cursor)
             rebuild_tables(cursor)
 
         add_states2db(set(states), cursor)
