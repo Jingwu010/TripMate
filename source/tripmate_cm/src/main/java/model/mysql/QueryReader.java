@@ -2,12 +2,12 @@
  * Created by Jingwu Xu on 4/3/19.
  */
 
-package mysql;
+package model.mysql;
 
 import java.sql.*;
 import java.util.*;
 
-public class DBQuery {
+public class QueryReader {
     static String REGEX = "jdbc:mysql://%s:%s/%s?user=%s&password=%s&serverTimezone=UTC";
     static String IP = "127.0.0.1";
     static String PORT = "3306";
@@ -62,7 +62,7 @@ public class DBQuery {
      * Query the 'state' table and retrieve full list of state names
      * @return A list of string indicates state name 
      */
-    protected static List<String> get_all_states() {
+    public static List<String> get_all_states() {
         return query_field_from_table("state_name", "state", "");
     }
 
@@ -70,7 +70,7 @@ public class DBQuery {
      * Query the 'state' table and retrieve full list of state names
      * @return A list of string indicates city name 
      */
-    protected static List<String> get_all_cities() {
+    public static List<String> get_all_cities() {
         return query_field_from_table("city_name", "city", "");
     }
 
@@ -78,7 +78,7 @@ public class DBQuery {
      * Query the 'poi' table and retrieve full list of poi names
      * @return A list of string indicates poi name      
      */
-    protected static List<String> get_all_pois_names() {
+    public static List<String> get_all_pois_names() {
         return query_field_from_table("poi_name", "poi", "");
     }
 
@@ -87,7 +87,7 @@ public class DBQuery {
      * @param  state_name A string that restricts the cities within a given state
      * @return            A list of string indicates city name 
      */
-    protected static List<String> get_cities_by_state_name(String state_name) {
+    public static List<String> get_cities_by_state_name(String state_name) {
         int state_id = get_state_id(state_name);
         String constraint = String.format(" WHERE state_id_fk = %d", state_id);
         return query_field_from_table("city_name", "city", constraint);
@@ -97,7 +97,7 @@ public class DBQuery {
      * Query the 'poi' table and retrieve full list of poi details
      * @return A list of pois, each poi has multiple key-value pairs containing detailed information
      */
-    protected static List<Map<String, String>> get_all_pois_details() {
+    public static List<Map<String, String>> get_all_pois_details() {
         return query_all_fields_from_table("poi", "");
     }
 
@@ -106,7 +106,7 @@ public class DBQuery {
      * @param  city_name A string that, if not empty, restricts the pois for a given city
      * @return           A list of pois, each poi has multiple key-value pairs containing detailed information
      */
-    protected static List<Map<String, String>> get_pois_details_by_city_name(String city_name) {
+    public static List<Map<String, String>> get_pois_details_by_city_name(String city_name) {
         int city_id = get_city_id(city_name);
         String constraint = String.format(" WHERE city_id_fk = %d", city_id);
         return query_all_fields_from_table("poi", constraint);
@@ -189,17 +189,17 @@ public class DBQuery {
     }
 
     public static void main(String args[]){
-        // DBQuery con = new DBQuery();
-        List<String> states = DBQuery.get_all_states();
+        // QueryReader con = new QueryReader();
+        List<String> states = QueryReader.get_all_states();
         System.out.println(states.get(0));
-        System.out.println(DBQuery.get_state_id("Colorado"));
-        List<String> cities = DBQuery.get_all_cities();
+        System.out.println(QueryReader.get_state_id("Colorado"));
+        List<String> cities = QueryReader.get_all_cities();
         System.out.println(cities.get(10));
-        List<String> co_cities = DBQuery.get_cities_by_state_name("Colorado");
+        List<String> co_cities = QueryReader.get_cities_by_state_name("Colorado");
         System.out.println(co_cities.size());
         System.out.println(co_cities.get(3));
-        System.out.println(DBQuery.get_city_id("Vancouver"));
-        List<Map<String, String>> co_pois = DBQuery.get_all_pois_details();
+        System.out.println(QueryReader.get_city_id("Vancouver"));
+        List<Map<String, String>> co_pois = QueryReader.get_all_pois_details();
         System.out.println(co_pois.get(1));
     }
 }

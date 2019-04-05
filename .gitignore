@@ -11,3 +11,5 @@ source/tripmate-jersey/
 # backups
 source/java_server_bc/
 
+# Secrete
+secrete*
