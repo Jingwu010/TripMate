@@ -10,7 +10,7 @@ config = {
     'user': 'tripmate',
     'password': 'tripmate',
     'host': '127.0.0.1',
-    'database': 'tripmate_test',
+    'database': 'tripmate',
     'raise_on_warnings': True,
     'auth_plugin': 'mysql_native_password'
 }
@@ -42,10 +42,10 @@ def get_entities(entries):
 
 def add_states2db(states, cursor, DEBUG=False):
     cprint('saving states into database')
-    add_state = ("INSERT INTO state (state_name) ",
+    add_state = ("INSERT INTO state (name) ",
                  "SELECT '{}' ",
                  "WHERE NOT EXISTS ",
-                 "(SELECT 1 FROM state WHERE state_name = '{}')")
+                 "(SELECT 1 FROM state WHERE name = '{}')")
     for state in states:
         data_state = (state,)
         data_state = (*data_state, data_state[0])
@@ -57,11 +57,11 @@ def add_states2db(states, cursor, DEBUG=False):
 
 def add_cities2db(cities, cursor, DEBUG=False):
     cprint('saving cities into database')
-    add_city=  ("INSERT INTO city (city_name, state_id_fk)",
+    add_city=  ("INSERT INTO city (name, state_id_fk)",
                 "SELECT '{}',",
-                "(SELECT state_id FROM state WHERE state_name = '{}') ",
+                "(SELECT id FROM state WHERE name = '{}') ",
                 "WHERE NOT EXISTS ",
-                "(SELECT 1 FROM city WHERE city_name = '{}');")
+                "(SELECT 1 FROM city WHERE name = '{}');")
                 
     for city_tuple in cities:
         if len(city_tuple) == 1:
@@ -81,13 +81,13 @@ def add_cities2db(cities, cursor, DEBUG=False):
 
 def add_pois2db(pois, cursor, DEBUG=False):
     cprint('saving pois into database')
-    add_poi =  ("INSERT INTO poi (poi_name, city_id_fk, poi_wikiurl, last_updated) ",
+    add_poi =  ("INSERT INTO poi (name, city_id_fk, wiki_url, last_updated) ",
                 "SELECT '{}', '{}', '{}', '{}' ",
                 "WHERE NOT EXISTS ",
-                "(SELECT 1 FROM poi WHERE poi_name = '{}' AND city_id_fk = '{}');")
+                "(SELECT 1 FROM poi WHERE name = '{}' AND city_id_fk = '{}');")
     for poi in pois: 
         city_name = poi[1]
-        regex = "SELECT city_id FROM city WHERE city_name = '{}';"
+        regex = "SELECT id FROM city WHERE name = '{}';"
         command = regex.format(city_name)
         cursor.execute(command)
         tmp = cursor.fetchone()
@@ -134,7 +134,7 @@ if __name__== "__main__":
         cursor = cnx.cursor()
 
         if FLAG:
-            # drop_tables(cursor)
+            drop_tables(cursor)
             rebuild_tables(cursor)
 
         add_states2db(set(states), cursor)

@@ -1,5 +1,7 @@
 package model.state;
 
+import model.mysql.QueryReader;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,6 @@ public class StateList {
      * @return A list of String indicates state name
      */
     public List<String> getStateList(){
-        return null;
+        return QueryReader.get_all_states();
     }
 }

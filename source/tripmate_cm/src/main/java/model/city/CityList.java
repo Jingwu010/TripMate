@@ -1,5 +1,7 @@
 package model.city;
 
+import model.mysql.QueryReader;
+
 import java.util.List;
 
 /**
@@ -11,7 +13,7 @@ public class CityList {
      * @return A list of String indicates city name
      */
     public List<String> getCityList(){
-        return null;
+        return QueryReader.get_all_cities();
     }
 
     /**
@@ -19,6 +21,6 @@ public class CityList {
      * @return A list of String indicates city name
      */
     public List<String> getCityList(String state_name){
-        return null;
+        return QueryReader.get_cities_by_state_name(state_name);
     }
 }

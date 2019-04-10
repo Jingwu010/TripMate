@@ -7,63 +7,13 @@ package model.mysql;
 import java.sql.*;
 import java.util.*;
 
-public class QueryReader {
-    static String REGEX = "jdbc:mysql://%s:%s/%s?user=%s&password=%s&serverTimezone=UTC";
-    static String IP = "127.0.0.1";
-    static String PORT = "3306";
-    static String DATABASE = "tripmate";
-    static String USERNAME = "tripmate";
-    static String PASSWORD = "tripmate";
-    static boolean DEBUG = false;
-    private static Connection conn = null;
-    private static Statement stmt = connect_mysql();
-
-    /**
-     * This method is only called for testing purpose
-     */
-    protected static void change_to_test_database() {
-        disconnect_mysql();
-        DATABASE = "tripmate_test";
-        stmt = connect_mysql();
-    }
-
-    /**
-     * Establish a connection to mysql database and return a Statement interface
-     * @return A Statement interface
-     */
-    private static Statement connect_mysql() {
-        String url = String.format(REGEX, IP, PORT, DATABASE, USERNAME, PASSWORD);
-        System.out.println("[SQL CONNECTOR] -- url: " + url);
-        System.out.println("[SQL CONNECTOR] -- Connecting to database : " + DATABASE);
-        try {
-            conn = DriverManager.getConnection(url);
-            System.out.println("[SQL CONNECTOR] -- Database connected!");
-            Statement stmt = conn.createStatement();
-            return stmt;
-        } catch (Exception e) {
-            System.out.println("[SQL CONNECTOR] -- Error connecting to mysql database!");
-            System.out.println(e);
-            return null;
-        }
-    }
-
-    private static void disconnect_mysql() {
-        try{
-            conn.close();
-            stmt.close();
-            System.out.println("[SQL CONNECTOR] -- Disconnected from mysql database!");
-        } catch (Exception e) {
-            System.out.println("[SQL CONNECTOR] -- Error disconnecting from mysql database!");
-            System.out.println(e);
-        }
-    }
-
+public class QueryReader extends MysqlConnector{
     /**
      * Query the 'state' table and retrieve full list of state names
      * @return A list of string indicates state name 
      */
     public static List<String> get_all_states() {
-        return query_field_from_table("state_name", "state", "");
+        return query_field_from_table("name", "state", "");
     }
 
     /**
@@ -71,7 +21,7 @@ public class QueryReader {
      * @return A list of string indicates city name 
      */
     public static List<String> get_all_cities() {
-        return query_field_from_table("city_name", "city", "");
+        return query_field_from_table("name", "city", "");
     }
 
     /**
@@ -79,7 +29,7 @@ public class QueryReader {
      * @return A list of string indicates poi name      
      */
     public static List<String> get_all_pois_names() {
-        return query_field_from_table("poi_name", "poi", "");
+        return query_field_from_table("name", "poi", "");
     }
 
     /**
@@ -90,7 +40,7 @@ public class QueryReader {
     public static List<String> get_cities_by_state_name(String state_name) {
         int state_id = get_state_id(state_name);
         String constraint = String.format(" WHERE state_id_fk = %d", state_id);
-        return query_field_from_table("city_name", "city", constraint);
+        return query_field_from_table("name", "city", constraint);
     }
 
     /**
@@ -112,6 +62,20 @@ public class QueryReader {
         return query_all_fields_from_table("poi", constraint);
     }
 
+    public static List<String> get_field_names(String table_name) {
+        String query = String.format("DESCRIBE %s", table_name);
+        List<String> entries = new LinkedList<String>();
+        try {
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                entries.add(rs.getString("Field"));
+            }
+        } catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+        }
+        return entries;
+    }
+
     /**
      * Query the database, retrieve all data records for a specific field in a specific table, 
      * other restrictions are allowed to append at the end
@@ -123,7 +87,7 @@ public class QueryReader {
      */
     private static List<String> query_field_from_table(String field_name, String table_name, String extras) {
         String query = String.format("SELECT %s FROM %s %s", field_name, table_name, extras);
-        List<String> entries = new LinkedList<String>();
+        List<String> entries = new ArrayList<String>();
         try {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
@@ -145,10 +109,10 @@ public class QueryReader {
      */
     private static List<Map<String, String>> query_all_fields_from_table(String table_name, String extras) {
         String query = String.format("SELECT * FROM %s %s", table_name, extras);
-        List<Map<String, String>> entries = new LinkedList<Map<String, String>>();
+        List<Map<String, String>> entries = new ArrayList<Map<String, String>>();
         try {
             ResultSet rs = stmt.executeQuery(query);
-            List<String> fields = new LinkedList<String>();
+            List<String> fields = new ArrayList<String>();
             ResultSetMetaData rsmd = rs.getMetaData();
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 fields.add(rsmd.getColumnName(i));
@@ -173,8 +137,8 @@ public class QueryReader {
      * [TODO] handle illegal case
      */
     private static int get_state_id(String state_name) {
-        String constraint = String.format(" WHERE state_name = '%s'", state_name);
-        return Integer.parseInt(query_field_from_table("state_id", "state", constraint).get(0));
+        String constraint = String.format(" WHERE name = '%s'", state_name);
+        return Integer.parseInt(query_field_from_table("id", "state", constraint).get(0));
     }
 
     /**
@@ -184,9 +148,10 @@ public class QueryReader {
      * [TODO] handle illegal case
      */
     private static int get_city_id(String city_name) {
-        String constraint = String.format(" WHERE city_name = '%s'", city_name);
-        return Integer.parseInt(query_field_from_table("city_id", "city", constraint).get(0));
+        String constraint = String.format(" WHERE name = '%s'", city_name);
+        return Integer.parseInt(query_field_from_table("id", "city", constraint).get(0));
     }
+
 
     public static void main(String args[]){
         // QueryReader con = new QueryReader();
@@ -201,5 +166,7 @@ public class QueryReader {
         System.out.println(QueryReader.get_city_id("Vancouver"));
         List<Map<String, String>> co_pois = QueryReader.get_all_pois_details();
         System.out.println(co_pois.get(1));
+
+        System.out.println(QueryReader.get_field_names("poi"));
     }
 }
