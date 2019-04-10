@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class StateList {
     /**
-     * [TODO] Query the database and return full list of state names
+     * Query the database and return full list of state names
      * @return A list of String indicates state name
      */
     public List<String> getStateList(){

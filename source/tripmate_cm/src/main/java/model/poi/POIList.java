@@ -16,7 +16,7 @@ public class POIList {
     String city_name;
 
     /**
-     * [TODO] Construct a list of POIs according to the city name
+     * Construct a list of POIs according to the city name
      * @param city_name A String indicates the city name where POIs reside
      */
     public POIList(String city_name) {
@@ -28,7 +28,7 @@ public class POIList {
     }
 
     /**
-     * [TODO] Get a list of POI name for current POI List
+     * Get a list of POI name for current POI List
      * @return
      */
     public List<String> getPOINameList() {
@@ -36,7 +36,7 @@ public class POIList {
     }
 
     /**
-     * [TODO] Get a list of POI details for current POI List
+     * Get a list of POI details for current POI List
      * @return
      */
     public List<Map<String, String>> getPOIList() {
@@ -44,7 +44,7 @@ public class POIList {
     }
 
     /**
-     * [TODO] Given a list of POI names, return a sublist of POI with exact name match
+     * Given a list of POI names, return a sublist of POI with exact name match
      * @param POINames A list of desired POI names
      * @return
      */
