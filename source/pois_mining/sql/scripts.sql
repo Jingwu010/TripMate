@@ -27,17 +27,25 @@ CREATE TABLE poi(
    poi_wikiurl VARCHAR(200),
    poi_lat DECIMAL(11, 8),
    poi_long DECIMAL(11, 8),
-   last_updated INT NOT NULL,
+   poi_last_updated INT NOT NULL,
    PRIMARY KEY ( poi_id )
    -- CONSTRAINT FK_citypoi FOREIGN KEY ( city_id_fk ) REFERENCES city( city_id )
 ) ENGINE=InnoDB;
+
+ALTER TABLE poi
+ADD COLUMN poi_formatted_address VARCHAR(100) AFTER poi_name;
+
+ALTER TABLE poi
+ADD COLUMN poi_thumbnail VARCHAR(200) AFTER poi_wikiurl;
+
+ALTER TABLE poi
+CHANGE COLUMN last_updated poi_last_updated INT;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE state;
 DROP TABLE city;
 DROP TABLE poi;
 SET FOREIGN_KEY_CHECKS = 1;
-
 
 INSERT INTO poi (poi_name, city_id_fk, poi_wikiurl, last_updated) 
     SELECT (poi_name, city_id_fk, poi_wikiurl, last_updated) 
@@ -48,3 +56,29 @@ INSERT INTO poi (poi_name, city_id_fk, poi_wikiurl, last_updated)
     WHERE NOT EXISTS (SELECT 1 FROM poi p WHERE p.poi_name = t.poi_name AND p.city_id_fk = t.city_id_fk);
 
 INSERT INTO poi (poi_name, city_id_fk, poi_wikiurl, last_updated) SELECT 'United States Capitol', '0', 'https://en.wikipedia.org//wiki/United_States_Capitol', '1554264453' WHERE NOT EXISTS (SELECT 1 FROM poi WHERE poi_name = 'United States Capitol' AND city_id_fk = '0');
+
+
+SELECT *
+INTO OUTFILE '/usr/local/mysql-8.0.15-macos10.14-x86_64/data/poi.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+ESCAPED BY '\\'
+LINES TERMINATED BY '\n'
+FROM poi
+
+
+SELECT *
+INTO OUTFILE '/usr/local/mysql-8.0.15-macos10.14-x86_64/data/city.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+ESCAPED BY '\\'
+LINES TERMINATED BY '\n'
+FROM city;
+
+SELECT *
+INTO OUTFILE '/usr/local/mysql-8.0.15-macos10.14-x86_64/data/state.csv'
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+ESCAPED BY '\\'
+LINES TERMINATED BY '\n'
+FROM state;
