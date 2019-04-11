@@ -5,7 +5,6 @@ import model.poi.POI;
 import model.poi.POIList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,7 +26,6 @@ public class Trip {
         this.size = this.pList.size();
         this.computeDistance();
         this.route = TripPlanner.planTrip(this);
-        System.out.println(Arrays.toString(route));
     }
 
     public List<JsonNode> getTrip() {

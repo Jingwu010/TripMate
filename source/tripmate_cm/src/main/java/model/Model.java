@@ -8,7 +8,6 @@ import model.trip.Trip;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jingwu Xu on 2019-04-04
@@ -59,20 +58,21 @@ public class Model {
         choices.addAll(model.getStateList());
         System.out.println("Please select your state or city");
         System.out.println(Arrays.toString(choices.toArray()));
-        String name = "Colorado";
+        String name = "Washington (state)";
         boolean is_city = model.isCity(name);
         System.out.println("name = " + name + " \t is city? " + is_city);
         if(!is_city) {
             choices = model.getCityList(name);
             System.out.println("Please select your city");
             System.out.println(Arrays.toString(choices.toArray()));
-            name = "Denver";
+            name = "Seattle";
         }
         model.updateCity(name);
         List<String> poi_choices = model.pList.getPOINameList();
         System.out.println("Please select your POI");
         System.out.println(Arrays.toString(poi_choices.toArray()));
-        String[] pois = {"Great American Beer Festival", "Boettcher Memorial Tropical Conservatory", "Opera Colorado", "Denver Zoo"};
+//        String[] pois = {"Great American Beer Festival", "Boettcher Memorial Tropical Conservatory", "Opera Colorado", "Denver Zoo"};
+        String[] pois = {"911 Media Arts Center", "Pike Place Market", "Seattle Great Wheel", "Blue Moon Tavern"};
         model.updateTrip(pois);
         List<JsonNode> result = model.planTrip();
         System.out.println("Here is your trip");

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * Created by Jingwu Xu on 2019-04-04
  */
 public class POIList {
-    List<POI> pList = new ArrayList<POI>();
+    List<POI> pList = new ArrayList<>();
     String city_name;
 
     /**
@@ -36,20 +36,12 @@ public class POIList {
     }
 
     /**
-     * Get a list of POI details for current POI List
-     * @return
-     */
-    public List<Map<String, String>> getPOIList() {
-        return pList.stream().map(poi -> poi.toMap()).collect(Collectors.toList());
-    }
-
-    /**
      * Given a list of POI names, return a sublist of POI with exact name match
-     * @param POINames A list of desired POI names
+     * @param poi_names A list of desired POI names
      * @return
      */
     public List<POI> getSubListOfPOI(String[] poi_names) {
-        List<POI> subpList = new ArrayList<POI>();
+        List<POI> subpList = new ArrayList<>();
         for (POI poi : pList) {
             if (Arrays.asList(poi_names).contains(poi.name)) {
                 subpList.add(poi);

@@ -65,7 +65,6 @@ class NearestNeighbour {
         route[trip.size] = start;
         for (int i = 1; i < trip.size; i++) {
             int next = getNearestNeighbour(route[i-1], Arrays.copyOfRange(route, 0, i));
-            System.out.println(Arrays.toString(route) + "  -  " + next);
             route[i] = next;
         }
         return route;

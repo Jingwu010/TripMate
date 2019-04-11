@@ -41,6 +41,9 @@ ADD COLUMN poi_thumbnail VARCHAR(200) AFTER poi_wikiurl;
 ALTER TABLE poi
 CHANGE COLUMN last_updated poi_last_updated INT;
 
+ALTER TABLE poi 
+MODIFY COLUMN formatted_address VARCHAR(200);
+
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE state;
 DROP TABLE city;
@@ -64,7 +67,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 ESCAPED BY '\\'
 LINES TERMINATED BY '\n'
-FROM poi
+FROM poi;
 
 
 SELECT *

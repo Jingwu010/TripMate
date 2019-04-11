@@ -16,4 +16,6 @@ secrete*
 
 # User-specific stuff
 workspace.xml
-sample_poi.json
+*.json
+*.csv
+tmp_data/
