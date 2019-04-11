@@ -1,5 +1,6 @@
 import json
 import ast
+import re
 import mysql.connector
 from mysql.connector import errorcode
 from datetime import datetime, date
@@ -31,8 +32,19 @@ def load_entries(filename='entries.txt'):
         i += 2
     return entries
 
+def load_pois(filename = 'pois_bc.txt'):
+    with open(base_dir+filename, 'r') as f:
+        content = f.read().splitlines()
+    pois = [ast.literal_eval(line) for line in content]
+    
+    pois = [tuple((poi[0], poi[1], poi[2], parse_dms(poi[3]), parse_dms(poi[4]))) for poi in pois]
+    return pois
+
 def escape_single_quote(tup):
     return tuple([x.replace("'", "\"") for x in tup])
+
+def replace_empty(string):
+    return 'NULL' if len(string) == 0 else string
 
 def get_entities(entries):
     states = [item[1][0] for item in entries]
@@ -81,8 +93,8 @@ def add_cities2db(cities, cursor, DEBUG=False):
 
 def add_pois2db(pois, cursor, DEBUG=False):
     cprint('saving pois into database')
-    add_poi =  ("INSERT INTO poi (name, city_id_fk, wiki_url, last_updated) ",
-                "SELECT '{}', '{}', '{}', '{}' ",
+    add_poi =  ("INSERT INTO poi (name, city_id_fk, wiki_url, last_updated, lat, lng) ",
+                "SELECT '{}', '{}', '{}', '{}', {}, {} ",
                 "WHERE NOT EXISTS ",
                 "(SELECT 1 FROM poi WHERE name = '{}' AND city_id_fk = '{}');")
     for poi in pois: 
@@ -95,8 +107,9 @@ def add_pois2db(pois, cursor, DEBUG=False):
             city_id_fk = str(tmp[0])
         else:
             city_id_fk = '0'
-        new_poi = (poi[0], city_id_fk, poi[2], datetime.now().strftime("%s"), poi[0], city_id_fk)
+        new_poi = (poi[0], city_id_fk, poi[2], datetime.now().strftime("%s"), poi[3], poi[4], poi[0], city_id_fk)
         new_poi = escape_single_quote(new_poi)
+        new_poi = tuple([replace_empty(x) for x in new_poi])
         command = ''.join(add_poi).format(*new_poi)
         if DEBUG: print('[EXECUTE]:\t', command)
         cursor.execute(command)
@@ -119,7 +132,32 @@ def rebuild_tables(cursor, filename = 'create_tables.sql'):
     commands = [x+';' for x in commands]
     for command in commands:
         cursor.execute(command)
-    
+
+def dms2dd(degrees, minutes, seconds, direction):
+    dd = float(degrees) + float(minutes)/60 + float(seconds)/(60*60);
+    if direction == 'S' or direction == 'W':
+        dd *= -1
+    return dd;
+
+def dd2dms(deg):
+    d = int(deg)
+    md = abs(deg - d) * 60
+    m = int(md)
+    sd = (md - m) * 60
+    return [d, m, sd]
+
+def parse_dms(dms):
+    if dms == None:
+        return ''
+    parts = re.split('[^\d\w]+', dms)
+    if len(parts) == 4:
+        lat = dms2dd(parts[0], parts[1], parts[2], parts[3])
+    elif len(parts) == 3:
+        lat = dms2dd(parts[0], parts[1], 0, parts[2])
+    elif len(parts) == 5:
+        lat = dms2dd(parts[0], parts[1], parts[2]+'.'+parts[3], parts[4])
+
+    return str(lat)[:11]
 
 def cprint(*message):
     print('[SAVE_TO_DATABASE] -- ', end='')
@@ -128,7 +166,8 @@ def cprint(*message):
 if __name__== "__main__":
 
     entries = load_entries()
-    states, cities, pois = get_entities(entries)
+    states, cities, _ = get_entities(entries)
+    pois = load_pois()
     try:
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor()

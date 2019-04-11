@@ -19,9 +19,7 @@ public class Model {
     POIList pList;
     Trip trip;
 
-    public Model() {
-
-    }
+    public Model() {}
 
     public void updateCity(String city_name) {
         pList = new POIList(city_name);
@@ -45,10 +43,6 @@ public class Model {
 
     public List<String> getStateList() {
         return sList.getStateList();
-    }
-
-    public List<Map<String,String>> getPOIList() {
-        return pList.getPOIList();
     }
 
     public boolean isCity(String name) {

@@ -28,12 +28,8 @@ public class POIUpdater {
             URL obj = new URL(url);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
             conn.setRequestMethod("GET");
-//
             ObjectMapper mapper = new ObjectMapper();
-//
             JsonNode node = mapper.readTree(conn.getInputStream());
-//            String data = "{\"results\":[{\"address_components\":[{\"long_name\":\"RillitoRiverPark\",\"short_name\":\"RillitoRiverPark\",\"types\":[\"establishment\",\"park\",\"point_of_interest\"]},{\"long_name\":\"Tucson\",\"short_name\":\"Tucson\",\"types\":[\"locality\",\"political\"]},{\"long_name\":\"PimaCounty\",\"short_name\":\"PimaCounty\",\"types\":[\"administrative_area_level_2\",\"political\"]},{\"long_name\":\"Arizona\",\"short_name\":\"AZ\",\"types\":[\"administrative_area_level_1\",\"political\"]},{\"long_name\":\"UnitedStates\",\"short_name\":\"US\",\"types\":[\"country\",\"political\"]},{\"long_name\":\"85712\",\"short_name\":\"85712\",\"types\":[\"postal_code\"]}],\"formatted_address\":\"RillitoRiverPark,Tucson,AZ85712,USA\",\"geometry\":{\"location\":{\"lat\":32.2745943,\"lng\":-110.9037221},\"location_type\":\"GEOMETRIC_CENTER\",\"viewport\":{\"northeast\":{\"lat\":32.2759432802915,\"lng\":-110.9023731197085},\"southwest\":{\"lat\":32.2732453197085,\"lng\":-110.9050710802915}}},\"place_id\":\"ChIJXyFgyYZz1oYRShGMi2Y4Ju0\",\"plus_code\":{\"compound_code\":\"73FW+RGTucson,Arizona,UnitedStates\",\"global_code\":\"854F73FW+RG\"},\"types\":[\"establishment\",\"park\",\"point_of_interest\"]}],\"status\":\"OK\"}";
-//            JsonNode node = mapper.readTree(data);
             System.out.println(node.toString());
             return node;
         } catch (IOException e) {

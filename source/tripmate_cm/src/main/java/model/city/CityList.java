@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class CityList {
     /**
-     * [TODO] Query the database and return full list of city names
+     * Query the database and return full list of city names
      * @return A list of String indicates city name
      */
     public List<String> getCityList(){
@@ -17,7 +17,7 @@ public class CityList {
     }
 
     /**
-     * [TODO] Query the database and return a list of city names within given state
+     * Query the database and return a list of city names within given state
      * @return A list of String indicates city name
      */
     public List<String> getCityList(String state_name){

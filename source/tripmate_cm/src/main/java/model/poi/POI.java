@@ -54,7 +54,7 @@ public class POI {
     }
 
     /**
-     * [TODO] Update POI if hasn't been updated for a while
+     * Update POI if hasn't been updated for a while
      */
     private void updatePOI() {
         if ((int) Instant.now().getEpochSecond() - last_updated > UPDATE_FREQUENCY) {
