@@ -1,6 +1,7 @@
 package model.trip;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import model.Location;
 import model.poi.POI;
 import model.poi.POIList;
 
@@ -12,9 +13,11 @@ import java.util.List;
  */
 public class Trip {
     List<POI> pList;
+    Location start;
+    Location stop;
     int size;
     int[] route;
-    double[][] distances;
+    TripPlanner tp;
 
     /**
      * Construct the trip using a list of POI_names
@@ -23,62 +26,39 @@ public class Trip {
      */
     public Trip(POIList pList, String[] poi_names) {
         this.pList = pList.getSubListOfPOI(poi_names);
-        this.size = this.pList.size();
-        this.computeDistance();
-        this.route = TripPlanner.planTrip(this);
+    }
+
+    public Trip(POIList pList, String[] poi_names, Location start) {
+        this(pList, poi_names);
+        this.start = start;
+        if (getLocation(start)==-1) this.pList.add((POI) start);
+    }
+
+    public Trip(POIList pList, String[] poi_names, Location start, Location stop) {
+        this(pList, poi_names);
+        this.start = start;
+        this.stop = stop;
+        if (getLocation(start)==-1) this.pList.add((POI) start);
+        if (getLocation(stop)==-1) this.pList.add((POI) stop);
+    }
+
+    int getLocation(Location loc) {
+        for (int i = 0; i < size; i++) {
+            if (pList.get(i).name.equals(loc.name))
+                return i;
+        }
+        return -1;
     }
 
     public List<JsonNode> getTrip() {
+        this.size = pList.size();
+        tp = new NearestNeighbourPlanner(this);
+        this.route = tp.planTrip();
+
         List<JsonNode> tripJson = new ArrayList<>();
         for (int i = 0; i < route.length; i++) {
             tripJson.add(pList.get(route[i]).toJson());
         }
         return tripJson;
     }
-
-    /**
-     * Compute the distance table between POIs in the list
-     */
-    private void computeDistance() {
-        distances = new double[size][size];
-        for(int i = 0; i < size; i++) {
-            for(int j = i; j < size; j++) {
-                POI poi_1 = pList.get(i);
-                POI poi_2 = pList.get(j);
-                distances[i][j] = distances[j][i] = distance(poi_1.lat.doubleValue(), poi_2.lat.doubleValue(),
-                                                             poi_1.lng.doubleValue(), poi_2.lng.doubleValue(),
-                                                             0, 0);
-            }
-        }
-    }
-
-    /**
-     * https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude
-     * @param lat1 latitude of place 1 in double format
-     * @param lat2 latitude of place 2 in double format
-     * @param lon1 longitude of place 1 in double format
-     * @param lon2 longitude of place 2 in double format
-     * @param el1 height of place 1 in double format
-     * @param el2 height of place 2 in doubel format
-     * @return euclidean distance
-     */
-    private static double distance(double lat1, double lat2, double lon1, double lon2, double el1, double el2) {
-
-        final int R = 6371; // Radius of the earth
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-        double height = el1 - el2;
-
-        distance = Math.pow(distance, 2) + Math.pow(height, 2);
-
-        return Math.sqrt(distance);
-    }
-
 }

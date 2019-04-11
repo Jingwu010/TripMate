@@ -1,101 +1,75 @@
 package model.trip;
 
-import java.util.Arrays;
-import java.util.stream.IntStream;
+import model.poi.POI;
 
 /**
  * Created by Jingwu Xu on 2019-04-04
  */
-class TripPlanner {
+abstract class TripPlanner {
+    Trip trip;
+    double[][] distances;
 
-    private TripPlanner() {}
+    TripPlanner(Trip trip) {
+        this.trip = trip;
+        computeDistance();
+        System.out.println("TripPlanner");
+        for (int i = 0; i < distances.length; i++){
+            for (int j = 0; j < distances[i].length; j++) {
+                System.out.print(distances[i][j]);
+            }
+            System.out.println();
+        }
+    }
 
     /**
      * Takes in a Trip object, plan trip accordingly and return the trip order
-     * @param trip Trip object that contains a list of POIs
      * @return An integer array that indicates the order of the trip
      */
-    static int[] planTrip(Trip trip) {
-        return NearestNeighbour.planTrip(trip);
-    }
-}
+    abstract int[] planTrip();
 
-// STATELESS OR STATEFUL?
-class NearestNeighbour {
-    private static Trip trip;
-
-    static int[] planTrip(Trip trip) {
-        NearestNeighbour.trip = trip;
-
-        int[] best_route = null;
-        double smallest_dist = Double.MAX_VALUE;
-        for (int sIdx = 0; sIdx < trip.size; sIdx++) {
-            int[] tmp_route = getNearestNeighbourRoute(sIdx);
-            double tmp_dist = getDistance(tmp_route);
-            if (smallest_dist > tmp_dist) {
-                smallest_dist = tmp_dist;
-                best_route = tmp_route;
+    /**
+     * Compute the distance table between POIs in the list
+     */
+    private void computeDistance() {
+        distances = new double[trip.size][trip.size];
+        System.out.println("TripPlanner size:" + trip.size);
+        for(int i = 0; i < trip.size; i++) {
+            for(int j = i; j < trip.size; j++) {
+                POI poi_1 = trip.pList.get(i);
+                POI poi_2 = trip.pList.get(j);
+                distances[i][j] = distances[j][i] = distance(poi_1.lat.doubleValue(), poi_2.lat.doubleValue(),
+                                                             poi_1.lng.doubleValue(), poi_2.lng.doubleValue(),
+                                                             0, 0);
             }
         }
-        return best_route;
     }
 
     /**
-     * Get the total euclidean distance of the route
-     * @param route An integer array indicates the route
-     * @return The total euclidean distance
+     * https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude
+     * @param lat1 latitude of place 1 in double format
+     * @param lat2 latitude of place 2 in double format
+     * @param lon1 longitude of place 1 in double format
+     * @param lon2 longitude of place 2 in double format
+     * @param el1 height of place 1 in double format
+     * @param el2 height of place 2 in doubel format
+     * @return euclidean distance
      */
-    private static double getDistance(int[] route) {
-        double tot_dist = 0;
-        for (int i = 1; i < route.length; i++) {
-            tot_dist += trip.distances[route[i-1]][route[i]];
-        }
-        return tot_dist;
-    }
+    private static double distance(double lat1, double lat2, double lon1, double lon2, double el1, double el2) {
 
-    /**
-     * Starting from a point return a route that covers all places
-     * and return to the starting point according to the nearest neighbour algorithm
-     * @param start An integer indicates the index of start place
-     * @return An integer array indicates the route
-     */
-    private static int[] getNearestNeighbourRoute(int start) {
-        int[] route = new int[trip.size+1];
-        route[0] = start;
-        route[trip.size] = start;
-        for (int i = 1; i < trip.size; i++) {
-            int next = getNearestNeighbour(route[i-1], Arrays.copyOfRange(route, 0, i));
-            route[i] = next;
-        }
-        return route;
-    }
+        final int R = 6371; // Radius of the earth
 
-    /**
-     * Get the nearest neighbouring point of current location that not in the previous route
-     * @param loc  Current location (index) in the trip
-     * @param prev A list of previous locations (indexes) in the route
-     * @return The index of nearest neighbouring point
-     */
-    private static int getNearestNeighbour(int loc, int[] prev) {
-        double smallest_dist = Double.MAX_VALUE;
-        int smallest_idx = 0;
-        for (int i = 0; i < trip.size; i++) {
-            if (i == loc || check(prev, i)) continue;
-            if (smallest_dist > trip.distances[loc][i]) {
-                smallest_dist = trip.distances[loc][i];
-                smallest_idx = i;
-            }
-        }
-        return smallest_idx;
-    }
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
 
-    /**
-     * check if the specified element is present in the array or not
-     * @param arr int array
-     * @param toCheckValue the target value to check
-     * @return boolean
-     */
-    private static boolean check(int[] arr, int toCheckValue) {
-        return IntStream.of(arr).anyMatch(x -> x == toCheckValue);
+        double height = el1 - el2;
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        return Math.sqrt(distance);
     }
 }
