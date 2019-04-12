@@ -16,7 +16,7 @@ CREATE TABLE poi(
    id INT NOT NULL AUTO_INCREMENT,
    city_id_fk INT,
    name VARCHAR(100) NOT NULL,
-   formatted_address VARCHAR(100),
+   formatted_address VARCHAR(200),
    wiki_url VARCHAR(200),
    thumbnail_url VARCHAR(200),
    lat DECIMAL(11, 8),
