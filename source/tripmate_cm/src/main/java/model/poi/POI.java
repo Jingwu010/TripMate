@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class POI extends Location {
     private Map<String,String> extras = new HashMap<>();
+    public static boolean POI_UPDATE_FLAG = true;
 
     POI(Map<String,String> poi_info) {
         for (Map.Entry<String,String> entry : poi_info.entrySet()) {
@@ -41,6 +42,7 @@ public class POI extends Location {
      * Update POI if hasn't been updated for a while
      */
     private void updatePOI() {
+        if (!POI_UPDATE_FLAG) return;
         if (lat != null && lng != null) return;
 
         System.out.println("[POIUpdater] -- Updating " + name + " data ...");

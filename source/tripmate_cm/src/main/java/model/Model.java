@@ -63,7 +63,7 @@ public class Model {
         return sList.getStateList();
     }
 
-    public boolean isCity(String name) {
+    private boolean isCity(String name) {
         for(String str: getCityList()) {
             if(str.trim().equals(name))
                return true;
