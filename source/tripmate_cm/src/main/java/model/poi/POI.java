@@ -1,7 +1,6 @@
 package model.poi;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Location;
 import model.mysql.QueryWriter;
 
@@ -44,7 +43,7 @@ public class POI extends Location {
     private void updatePOI() {
         if (lat != null && lng != null) return;
 
-         System.out.println("[POIUpdater] -- Updating " + name + " data ...");
+        System.out.println("[POIUpdater] -- Updating " + name + " data ...");
 
         JsonNode node = POIUpdater.requestEndPoint(name);
 
@@ -66,27 +65,9 @@ public class POI extends Location {
      * Convert all fields to k-v Map
      * @return
      */
-    private Map<String,String> toMap() {
-        Map<String,String> info = new HashMap<String, String>();
-        info.put("name", name);
-        info.put("lat", lat.toString());
-        info.put("lng", lng.toString());
+    protected Map<String,String> toMap() {
+        Map<String,String> info = super.toMap();
         info.putAll(extras);
         return info;
-    }
-
-    /**
-     * Convert all fields to Json format
-     * @return JsonNode
-     */
-    public JsonNode toJson() {
-        return new ObjectMapper().valueToTree(toMap());
-    }
-
-    public String toString() {
-        String format = "poi_name:\t %s\n" +
-                "poi_lat:\t %s\n" +
-                "poi_long:\t %s\n";
-        return String.format(format, name, lat, lng);
     }
 }

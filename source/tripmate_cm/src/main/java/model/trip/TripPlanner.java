@@ -1,6 +1,6 @@
 package model.trip;
 
-import model.poi.POI;
+import model.Location;
 
 /**
  * Created by Jingwu Xu on 2019-04-04
@@ -12,13 +12,6 @@ abstract class TripPlanner {
     TripPlanner(Trip trip) {
         this.trip = trip;
         computeDistance();
-        System.out.println("TripPlanner");
-        for (int i = 0; i < distances.length; i++){
-            for (int j = 0; j < distances[i].length; j++) {
-                System.out.print(distances[i][j]);
-            }
-            System.out.println();
-        }
     }
 
     /**
@@ -31,14 +24,14 @@ abstract class TripPlanner {
      * Compute the distance table between POIs in the list
      */
     private void computeDistance() {
-        distances = new double[trip.size][trip.size];
-        System.out.println("TripPlanner size:" + trip.size);
-        for(int i = 0; i < trip.size; i++) {
-            for(int j = i; j < trip.size; j++) {
-                POI poi_1 = trip.pList.get(i);
-                POI poi_2 = trip.pList.get(j);
-                distances[i][j] = distances[j][i] = distance(poi_1.lat.doubleValue(), poi_2.lat.doubleValue(),
-                                                             poi_1.lng.doubleValue(), poi_2.lng.doubleValue(),
+        int size = trip.locList.size();
+        distances = new double[size][size];
+        for(int i = 0; i < size; i++) {
+            for(int j = i; j < size; j++) {
+                Location loc_1 = trip.locList.get(i);
+                Location loc_2 = trip.locList.get(j);
+                distances[i][j] = distances[j][i] = distance(loc_1.lat.doubleValue(), loc_2.lat.doubleValue(),
+                                                             loc_1.lng.doubleValue(), loc_2.lng.doubleValue(),
                                                              0, 0);
             }
         }

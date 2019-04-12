@@ -19,19 +19,20 @@ class NearestNeighbourPlanner extends TripPlanner{
             return searchFull();
         } else if (trip.start != null && trip.stop == null) {
             // if start place is provided, the itinerary should return back to the start place
-            return getNearestNeighbourRoute(trip.getLocation(trip.start), trip.getLocation(trip.start), trip.size+1);
+            return getNearestNeighbourRoute(trip.getLocation(trip.start), trip.getLocation(trip.start), trip.locList.size()+1);
 
         } else {
             // if start place and stop place are both provided, plan a trip
-            return getNearestNeighbourRoute(trip.getLocation(trip.start), trip.getLocation(trip.stop), trip.size);
+            return getNearestNeighbourRoute(trip.getLocation(trip.start), trip.getLocation(trip.stop), trip.locList.size());
         }
     }
 
     private int[] searchFull() {
+        int size = trip.locList.size();
         int[] best_route = null;
         double smallest_dist = Double.MAX_VALUE;
-        for (int sIdx = 0; sIdx < trip.size; sIdx++) {
-            int[] tmp_route = Arrays.copyOfRange(getNearestNeighbourRoute(sIdx, sIdx, trip.size+1), 0, trip.size);
+        for (int sIdx = 0; sIdx < size; sIdx++) {
+            int[] tmp_route = Arrays.copyOfRange(getNearestNeighbourRoute(sIdx, sIdx, size+1), 0, size);
             double tmp_dist = getDistance(tmp_route);
             if (smallest_dist > tmp_dist) {
                 smallest_dist = tmp_dist;
@@ -83,7 +84,7 @@ class NearestNeighbourPlanner extends TripPlanner{
     private int getNearestNeighbour(int loc, int[] prev, int[] post) {
         double smallest_dist = Double.MAX_VALUE;
         int smallest_idx = 0;
-        for (int i = 0; i < trip.size; i++) {
+        for (int i = 0; i < trip.locList.size(); i++) {
             if (i == loc || check(prev, i) || check(post, i)) continue;
             if (smallest_dist > distances[loc][i]) {
                 smallest_dist = distances[loc][i];

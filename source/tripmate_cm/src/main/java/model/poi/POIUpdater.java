@@ -2,14 +2,12 @@ package model.poi;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import model.mysql.QueryReader;
 import model.settings.Secretes;
 import model.settings.SettingReader;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
 
 /**
  * Created by Jingwu Xu on 2019-04-04

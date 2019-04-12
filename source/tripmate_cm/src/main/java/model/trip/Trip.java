@@ -1,9 +1,6 @@
 package model.trip;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import model.Location;
-import model.poi.POI;
-import model.poi.POIList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,53 +9,62 @@ import java.util.List;
  * Created by Jingwu Xu on 2019-04-04
  */
 public class Trip {
-    List<POI> pList;
+    List<Location> locList;
     Location start;
     Location stop;
-    int size;
     int[] route;
     TripPlanner tp;
 
     /**
-     * Construct the trip using a list of POI_names
-     * @param pList
-     * @param poi_names
+     * Construct the trip from a list of Locations
+     * @param locList a list of Location objects that to be visited
      */
-    public Trip(POIList pList, String[] poi_names) {
-        this.pList = pList.getSubListOfPOI(poi_names);
+    public Trip(List<Location> locList) {
+        this.locList = locList;
     }
 
-    public Trip(POIList pList, String[] poi_names, Location start) {
-        this(pList, poi_names);
+    /**
+     * Construct the trip from a list of Locations with specific start Location
+     * The trip starts and ends at start Location
+     * @param locList a list of Location objects that to be visited
+     * @param start a start Location where trip starts and ends at
+     */
+    public Trip(List<Location> locList, Location start) {
+        this(locList);
         this.start = start;
-        if (getLocation(start)==-1) this.pList.add((POI) start);
+        if (getLocation(start)==-1) this.locList.add(start);
     }
 
-    public Trip(POIList pList, String[] poi_names, Location start, Location stop) {
-        this(pList, poi_names);
-        this.start = start;
+    /**
+     * Construct the trip from a list of Locations with specific start Location and stop Location
+     * The trip starts at start and ends at stop
+     * @param locList a list of Location objects that to be visited
+     * @param start a start Location where trip starts from
+     * @param stop a start Location where trip ends at
+     */
+    public Trip(List<Location> locList, Location start, Location stop) {
+        this(locList, start);
         this.stop = stop;
-        if (getLocation(start)==-1) this.pList.add((POI) start);
-        if (getLocation(stop)==-1) this.pList.add((POI) stop);
+        if (getLocation(stop)==-1) this.locList.add(stop);
     }
 
     int getLocation(Location loc) {
-        for (int i = 0; i < size; i++) {
-            if (pList.get(i).name.equals(loc.name))
+        for (int i = 0; i < locList.size(); i++) {
+            if (loc.equals(locList.get(i))) {
                 return i;
+            }
         }
         return -1;
     }
 
-    public List<JsonNode> getTrip() {
-        this.size = pList.size();
+    public List<Location> planTrip() {
         tp = new NearestNeighbourPlanner(this);
-        this.route = tp.planTrip();
+        route = tp.planTrip();
 
-        List<JsonNode> tripJson = new ArrayList<>();
+        List<Location> sorted_trip = new ArrayList<>();
         for (int i = 0; i < route.length; i++) {
-            tripJson.add(pList.get(route[i]).toJson());
+            sorted_trip.add(locList.get(route[i]));
         }
-        return tripJson;
+        return sorted_trip;
     }
 }

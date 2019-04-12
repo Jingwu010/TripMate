@@ -49,13 +49,4 @@ public class POIList {
         }
         return subpList;
     }
-
-    public POI getPOI(String poi_name) {
-        for (POI poi : pList) {
-            if (poi.name.equals(poi_name)) {
-                return poi;
-            }
-        }
-        return null;
-    }
 }
