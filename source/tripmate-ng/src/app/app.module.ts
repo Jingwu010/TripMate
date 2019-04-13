@@ -33,7 +33,7 @@ import { SidenavService } from './core/sidenav/sidenav.service';
     FooterComponent,
     HttpComponent,
     PageComponent,
-    SidenavComponent
+    SidenavComponent,
   ],
   imports: [
     BrowserModule,

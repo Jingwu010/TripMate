@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
-import {FormControl} from '@angular/forms'
+import {FormControl} from '@angular/forms';
+import { Observable } from 'rxjs';
+
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/map';
+
+import {Locations} from './mock-list';
+import {Location} from './location';
 
 @Component({
   selector: 'app-page',
@@ -9,19 +16,17 @@ import {FormControl} from '@angular/forms'
 
 export class PageComponent {
   searchControl = new FormControl();
-
-  results = [
-    'what time is it',
-    'what is my ip',
-    'what song is this',
-    'when is the solar eclipse',
-    'what is my name',
-    'what is inertia',
-    'what does the fox say',
-    'what do turtles eat',
-    'where\'s my refund',
-  ];
+  filteredResults$: Observable<Location[]>;
+  data = Locations;
 
   constructor() {
+    this.filteredResults$ = this.searchControl.valueChanges
+      .startWith('')
+      .map(val => this.filterResults(val))
+      .map(val => val.slice(0, 4));
+  }
+
+  private filterResults(val: string): Location[] {
+    return val ? this.data.filter(v => v.name.toLowerCase().indexOf(val.toLowerCase()) === 0) : this.data;
   }
 }
