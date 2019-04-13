@@ -1,0 +1,31 @@
+<div class="page-container">
+  <!-- <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <input type="search" class="mat-elevation-z2" [mdAutocomplete]="auto" [formControl]="searchControl">
+      <textarea matInput placeholder="Leave a comment"></textarea>
+      <input matInput placeholder="Search">
+      <input type="search" class="mat-elevation-z2" placeholder="Search" [formControl]="searchControl"  [matAutocomplete]="auto">
+      <div class="spacer"></div>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of results" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form> -->
+
+  <form class="example-form">
+    <input type="search" 
+      class="mat-elevation-z2" 
+      placeholder="Search" 
+      aria-label="Number" 
+      [formControl]="searchControl" 
+      [matAutocomplete]="auto">
+    <div class="spacer"></div>
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let option of results" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </form>
+</div>
