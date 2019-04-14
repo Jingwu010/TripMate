@@ -1,5 +1,5 @@
 <div class="page-container">
-    <form class="example-form">
+    <!-- <form class="example-form">
         <input #locname type="search" class="mat-elevation-z2" (keyup.enter)="selectLocation(locname.value)" placeholder="Search" aria-label="Number" [formControl]="searchControl" [matAutocomplete]="auto">
         <div class="spacer"></div>
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)='selectLocation($event.option.value)'>
@@ -7,5 +7,6 @@
                 {{loc.name}}
             </mat-option>
         </mat-autocomplete>
-    </form>
+    </form> -->
+    <app-selector></app-selector>
 </div>

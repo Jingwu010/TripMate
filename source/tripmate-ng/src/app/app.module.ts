@@ -9,7 +9,10 @@ import { MatToolbarModule,
   MatCardModule,
   MatAutocompleteModule,
   MatInputModule,
-  MatFormFieldModule } from '@angular/material';
+  MatFormFieldModule,
+  MatCheckboxModule,
+  MatPaginatorModule,
+  MatSnackBarModule } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 // material  section
@@ -23,8 +26,10 @@ import { FooterComponent } from './core/footer/footer.component';
 import { HttpComponent } from './core/http/http.component';
 import { PageComponent } from './core/page/page.component';
 import { SidenavComponent } from './core/sidenav/sidenav.component';
+import { MatTableModule } from '@angular/material'  
 
 import { SidenavService } from './core/sidenav/sidenav.service';
+import { SelectorComponent } from './core/selector/selector.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +39,7 @@ import { SidenavService } from './core/sidenav/sidenav.service';
     HttpComponent,
     PageComponent,
     SidenavComponent,
+    SelectorComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +56,11 @@ import { SidenavService } from './core/sidenav/sidenav.service';
     MatInputModule,
     MatFormFieldModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatSnackBarModule
   ],
   providers: [SidenavService],
   bootstrap: [AppComponent]
