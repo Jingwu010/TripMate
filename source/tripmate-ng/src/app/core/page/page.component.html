@@ -1,9 +1,9 @@
 <div class="page-container">
     <form class="example-form">
-        <input type="search" class="mat-elevation-z2" placeholder="Search" aria-label="Number" [formControl]="searchControl" [matAutocomplete]="auto">
+        <input #locname type="search" class="mat-elevation-z2" (keyup.enter)="selectLocation(locname.value)" placeholder="Search" aria-label="Number" [formControl]="searchControl" [matAutocomplete]="auto">
         <div class="spacer"></div>
-        <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let loc of filteredResults$ | async" [value]="loc">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)='selectLocation($event.option.value)'>
+            <mat-option *ngFor="let loc of filteredResults | async " [value]="loc.name">
                 {{loc.name}}
             </mat-option>
         </mat-autocomplete>
