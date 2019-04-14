@@ -1,0 +1,12 @@
+<div class="container">
+  <app-header APP_TITLE={{APP_TITLE}}></app-header>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav class="right-sidenav" mode="side" opened>
+      <app-sidenav></app-sidenav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <app-page></app-page>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
