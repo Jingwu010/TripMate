@@ -1,12 +1,15 @@
-<div class="page-container">
-    <!-- <form class="example-form">
-        <input #locname type="search" class="mat-elevation-z2" (keyup.enter)="selectLocation(locname.value)" placeholder="Search" aria-label="Number" [formControl]="searchControl" [matAutocomplete]="auto">
-        <div class="spacer"></div>
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)='selectLocation($event.option.value)'>
-            <mat-option *ngFor="let loc of filteredResults | async " [value]="loc.name">
-                {{loc.name}}
-            </mat-option>
-        </mat-autocomplete>
-    </form> -->
-    <app-selector></app-selector>
+<div class="page-container" #gmap>
+    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="true" [streetViewControl]="false">
+        <!-- <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker> -->
+        <agm-marker *ngFor="let loc of locations; let i = index" (markerClick)="clickedMarker(loc.name, i)" [latitude]="loc.lat" [longitude]="loc.lng">
+
+            <agm-info-window>
+                <strong>{{loc.name}}</strong>
+            </agm-info-window>
+            <agm-polyline [editable]="false" [clickable]="false">
+                <agm-polyline-point *ngFor="let data of lines" [latitude]="data.lat" [longitude]="data.lng">
+                </agm-polyline-point>
+            </agm-polyline>
+        </agm-marker>
+    </agm-map>
 </div>

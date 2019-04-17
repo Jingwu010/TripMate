@@ -1,10 +1,8 @@
-import { Component } from '@angular/core';
-import {FormControl} from '@angular/forms';
-import { Observable } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { Component, OnDestroy } from '@angular/core';
+import { Subscription }   from 'rxjs';
 
-import {Locations} from './mock-list';
-import {Location} from './location';
+import { SelectionService } from 'src/app/shared/selection.service';
+import { Location } from 'src/app/shared/location';
 
 @Component({
   selector: 'app-page',
@@ -12,29 +10,36 @@ import {Location} from './location';
   styleUrls: ['./page.component.css']
 })
 
-export class PageComponent {
-  searchControl = new FormControl();
-  filteredResults: Observable<Location[]>;
-  data = Locations;
-  selectedLocations = new Set();
+export class PageComponent implements OnDestroy {
+  private locations: Location[];
+  private subscription: Subscription;
 
-  constructor() {
-    this.filteredResults = this.searchControl.valueChanges.pipe(
-      startWith(''),
-      map(val => this.filterResults(val)),
-      map(val => val.slice(0, 4))
+  private zoom: number = 13;
+  private lat: number = 47.607060;
+  private lng: number = -122.333154;
+
+  private lines: route[] = [];
+
+  constructor(private selectionService: SelectionService) {
+    this.subscription = selectionService.selectedLocations$.subscribe(
+      selectedLocations => {
+        console.log('new data comes in');
+        this.locations = selectedLocations;
+      }
     );
   }
 
-  private filterResults(val: string): Location[] {
-    if (typeof val == 'string')
-      return val ? this.data.filter(v => v.name.toLowerCase().indexOf(val.toLowerCase()) === 0) : this.data;
-    return this.data;
+  clickedMarker(label: string, index: number) {
+    console.log(`clicked the marker: ${label || index}`)
   }
 
-  private selectLocation(val) {
-    val = this.data.find(loc => loc.name == val)
-    this.selectedLocations.add(val);
-    console.log(this.selectedLocations);
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.subscription.unsubscribe();
   }
+}
+
+interface route {
+  lat: number;
+  lng: number;
 }
