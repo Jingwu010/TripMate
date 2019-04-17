@@ -12,12 +12,15 @@ import { MatToolbarModule,
   MatFormFieldModule,
   MatCheckboxModule,
   MatPaginatorModule,
-  MatSnackBarModule } from '@angular/material';
+  MatSnackBarModule,
+  MatStepperModule } from '@angular/material';
+import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 // material  section
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { AgmCoreModule } from '@agm/core';
+import { AgmDirectionModule } from 'agm-direction';   // agm-direction
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +32,9 @@ import { SidenavComponent } from './core/sidenav/sidenav.component';
 import { MatTableModule } from '@angular/material'  
 
 import { SidenavService } from './core/sidenav/sidenav.service';
-import { SelectorComponent } from './core/selector/selector.component';
+import { InitComponent } from './core/init/init.component';
+import { StepOneComponent } from './core/step-one/step-one.component';
+import { StepTwoComponent } from './core/step-two/step-two.component';
 
 @NgModule({
   declarations: [
@@ -39,9 +44,12 @@ import { SelectorComponent } from './core/selector/selector.component';
     HttpComponent,
     PageComponent,
     SidenavComponent,
-    SelectorComponent,
+    InitComponent,
+    StepOneComponent,
+    StepTwoComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -60,7 +68,12 @@ import { SelectorComponent } from './core/selector/selector.component';
     MatTableModule,
     MatCheckboxModule,
     MatPaginatorModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatStepperModule,
+    AgmCoreModule.forRoot({
+      apiKey: ''
+    }),
+    AgmDirectionModule
   ],
   providers: [SidenavService],
   bootstrap: [AppComponent]

@@ -1,0 +1,15 @@
+<form class="example-form" [formGroup]="formStepOne">
+    <mat-form-field>
+        <input matInput #cityname type="search" (keyup.enter)="selectCity(cityname.value)" placeholder="Search" formControlName="searchControl" [matAutocomplete]="auto" required>
+    </mat-form-field>
+    <!-- <input #locname type="search" class="mat-elevation-z2" (keyup.enter)="selectCity(locname.value)" placeholder="Search" aria-label="Number" formControlName="searchControl" [matAutocomplete]="auto" required> -->
+    <!-- <div class="spacer"></div> -->
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)='selectCity($event.option.value)'>
+        <mat-option *ngFor="let loc of filteredResults | async " [value]="loc">
+            {{loc}}
+        </mat-option>
+    </mat-autocomplete>
+    <div>
+        <button mat-raised-button color="primary" matStepperNext (click)="goNext()">Next</button>
+    </div>
+</form>

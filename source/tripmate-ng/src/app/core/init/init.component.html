@@ -1,0 +1,16 @@
+<div fxLayout style="height: 95%">
+    <mat-vertical-stepper linear #stepper (selectionChange)="selectionChange($event)">
+        <mat-step [stepControl]="frmStepOne">
+            <ng-template matStepLabel>{{step1_title}}</ng-template>
+            <app-step-one #step1 (changeStep1Title)="changeStep1Title($event)"></app-step-one>
+        </mat-step>
+        <mat-step [stepControl]="frmStepTwo">
+            <ng-template matStepLabel>Step Two Details</ng-template>
+            <app-step-two #step2></app-step-two>
+        </mat-step>
+        <!-- <mat-step [stepControl]="frmStepThree">
+            <ng-template matStepLabel>Step Three Details</ng-template>
+            <app-step-three #step3></app-step-three>
+        </mat-step> -->
+    </mat-vertical-stepper>
+</div>
